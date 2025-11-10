@@ -1,0 +1,53 @@
+############################
+# Dependencias y builds
+############################
+**/node_modules/
+**/dist/
+**/build/
+**/.angular/
+**/.cache/
+**/.turbo/
+
+############################
+# Entornos y secretos
+############################
+*.env
+*.env.*.local
+*.local.env
+backend/.env
+frontend/.env
+
+############################
+# Logs y cobertura
+############################
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+**/coverage/
+
+############################
+# SO / IDE / temporales
+############################
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+.history/
+*.swp
+*.swo
+*.tmp
+*.temp
+
+############################
+# Angular / Nest específicos
+############################
+frontend/.angular/cache/
+frontend/.eslintcache
+backend/.eslintcache
+backend/dist/
+backend/db.sqlite
+
+

@@ -1,0 +1,94 @@
+<mat-card class="filters">
+  <div class="row">
+    <mat-form-field appearance="outline">
+      <mat-label>Sala</mat-label>
+      <mat-select>
+        <mat-option [value]="null">Todas</mat-option>
+        <mat-option value="faraon">Faraón</mat-option>
+        <mat-option value="submarino">Submarino</mat-option>
+        <mat-option value="laboratorio">Laboratorio</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Inicio</mat-label>
+      <input matInput type="datetime-local">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fin</mat-label>
+      <input matInput type="datetime-local">
+    </mat-form-field>
+  </div>
+</mat-card>
+
+<mat-card>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <ng-container matColumnDef="room">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sala</th>
+      <td mat-cell *matCellDef="let s">{{ s.otroCamppo }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Inicio</th>
+      <td mat-cell *matCellDef="let s">{{ s.start | date:'short' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fin</th>
+      <td mat-cell *matCellDef="let s">{{ s.end | date:'short' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let s">{{ s.status || 'Disponible' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>Acción</th>
+      <td mat-cell *matCellDef="let s">
+        <button mat-stroked-button color="primary">Ver</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5,10,25]"></mat-paginator>
+</mat-card>
+
+<mat-card class="form">
+  <h3>Nueva reserva</h3>
+  <form [formGroup]="form" (ngSubmit)="reservar()">
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Sala</mat-label>
+        <mat-select formControlName="roomId" required>
+          <mat-option value="faraon">Faraón</mat-option>
+          <mat-option value="submarino">Submarino</mat-option>
+          <mat-option value="laboratorio">Laboratorio</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('roomId')?.hasError('required')">Requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Inicio</mat-label>
+        <input matInput type="datetime-local" formControlName="start" required>
+        <mat-error *ngIf="form.get('start')?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="form.errors?.['rangeInvalid']">El inicio debe ser menor que el fin</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fin</mat-label>
+        <input matInput type="datetime-local" formControlName="end" required>
+        <mat-error *ngIf="form.get('end')?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="form.errors?.['minDuration']">La duración mínima es 30 minutos</mat-error>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary">Reservar</button>
+  </form>
+</mat-card>
+
+

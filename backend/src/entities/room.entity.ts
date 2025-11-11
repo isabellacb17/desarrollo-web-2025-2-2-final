@@ -3,7 +3,6 @@ import { Session } from './session.entity';
 
 @Entity('rooms')
 export class Room {
-  // Usamos ids semánticos para compatibilidad ('faraon', 'submarino', 'laboratorio')
   @PrimaryColumn()
   id!: string;
 

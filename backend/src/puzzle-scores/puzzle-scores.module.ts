@@ -5,5 +5,3 @@ import { PuzzleScoresController } from './puzzle-scores.controller';
   controllers: [PuzzleScoresController],
 })
 export class PuzzleScoresModule {}
-
-

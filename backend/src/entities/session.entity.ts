@@ -1,32 +1,27 @@
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Room } from './room.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Session } from './session.entity';
 
-@Entity('sessions')
-@Index(['roomId', 'startAt'])
-@Index(['roomId', 'endAt'])
-@Index(['userId', 'startAt'])
-@Index(['userId', 'endAt'])
-export class Session {
-  @PrimaryColumn()
+@Entity('puzzle_scores')
+export class PuzzleScore {
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  roomId!: string;
-
-  @ManyToOne(() => Room, (r) => r.sessions, { eager: true })
-  room!: Room;
+  @ManyToOne(() => Session, { eager: true })
+  session!: Session;
 
   @Column()
-  userId!: string;
+  sessionId!: string;
 
-  @Column({ type: 'datetime' })
-  startAt!: Date;
+  @Column()
+  attempt!: number;
 
-  @Column({ type: 'datetime' })
-  endAt!: Date;
+  @Column()
+  score!: number;
+
+  @Column({ default: false })
+  isFinal!: boolean;
 
   @CreateDateColumn()
   createdAt!: Date;
 }
-
 

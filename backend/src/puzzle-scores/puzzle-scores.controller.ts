@@ -13,5 +13,3 @@ export class PuzzleScoresController {
     return { ok: true };
   }
 }
-
-

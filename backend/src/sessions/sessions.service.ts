@@ -7,8 +7,8 @@ import { Room } from '../entities/room.entity';
 export type CreateSessionDto = {
   roomId: string;
   userId: string;
-  start: string; // ISO
-  end: string;   // ISO
+  start: string; 
+  end: string;   
 };
 
 @Injectable()
@@ -29,8 +29,45 @@ export class SessionsService {
   }
 
   async book(dto: CreateSessionDto) {
-    // TODO (examen): detectar solapes por roomId y por userId mediante QueryBuilder y lanzar SESSION_OVERLAP
-    // throw new BadRequestException({ message: 'Session overlap', code: 'SESSION_OVERLAP', details: [{ conflictWithSessionId: '...' }] });
+    const start = new Date(dto.start).getTime();
+    const end = new Date(dto.end).getTime();
+
+    
+    const roomOverlap = await this.sessionRepo
+      .createQueryBuilder('s')
+      .where('s.roomId = :roomId', { roomId: dto.roomId })
+      .andWhere('(s.startAt < :end AND s.endAt > :start)', { 
+        start: new Date(dto.start), 
+        end: new Date(dto.end) 
+      })
+      .getOne();
+
+    if (roomOverlap) {
+      throw new BadRequestException({ 
+        message: 'Session overlap', 
+        code: 'SESSION_OVERLAP', 
+        details: [{ conflictWithSessionId: roomOverlap.id }] 
+      });
+    }
+
+    
+    const userOverlap = await this.sessionRepo
+      .createQueryBuilder('s')
+      .where('s.userId = :userId', { userId: dto.userId })
+      .andWhere('(s.startAt < :end AND s.endAt > :start)', { 
+        start: new Date(dto.start), 
+        end: new Date(dto.end) 
+      })
+      .getOne();
+
+    if (userOverlap) {
+      throw new BadRequestException({ 
+        message: 'Session overlap', 
+        code: 'SESSION_OVERLAP', 
+        details: [{ conflictWithSessionId: userOverlap.id }] 
+      });
+    }
+
     const room = await this.roomRepo.findOne({ where: { id: dto.roomId } });
     if (!room) {
       throw new BadRequestException({ message: 'Invalid room', code: 'INVALID_ROOM' });
@@ -46,5 +83,3 @@ export class SessionsService {
     return { id: saved.id };
   }
 }
-
-

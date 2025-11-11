@@ -24,16 +24,12 @@ export class RolesGuard implements CanActivate {
     }
 
     try {
-      // Verificar firma y expiración estándar
       const payload = this.jwt.verify(token);
-
-      // Validar roles si se requieren
       if (requiredRoles.length > 0) {
         const roles: string[] = payload?.roles ?? [];
         const ok = requiredRoles.every((r) => roles.includes(r));
         if (!ok) throw new ForbiddenException('Insufficient role');
       }
-
       return true;
     } catch (err) {
       if (err instanceof ForbiddenException) throw err;
@@ -41,5 +37,4 @@ export class RolesGuard implements CanActivate {
     }
   }
 }
-
 
